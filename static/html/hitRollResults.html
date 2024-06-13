@@ -1,0 +1,31 @@
+<h2>Hit roll - {{$.A.Attacks}} attacks hitting on {{$.A.Skill}}+</h2></h2>
+
+<form>
+  <input name="A" type="hidden" value ="{{$.A.Attacks}}">
+  <input name="WS" type="hidden" value ="{{$.A.Skill}}">
+  <input name="S" type="hidden" value ="{{$.A.Strength}}">
+  <input name="T" type="hidden" value ="{{$.A.Toughness}}">
+  <input name="AP" type="hidden" value ="{{$.A.Penetration}}">
+  <input name="D" type="hidden" value ="{{$.A.Damage}}">
+  <input name="CH" type="hidden" value ="{{$.A.CriticalHitOn}}">
+  <input name="CW" type="hidden" value ="{{$.A.CriticalWoundOn}}">
+
+  <input name="R" type="hidden" value ="{{$.J}}">
+  <input name="RS" type="hidden" value ="{{$.R.Successes}}">
+  <input name="RC" type="hidden" value ="{{$.R.Criticals}}">
+
+  <p>
+    {{range $i, $die := .D}}
+    <div hx-put="/hitreroll" hx-vals='{"die":{{$i}}}' hx-target="#hit-roll-results"><img src="static\img\{{$die}}.png"></div>
+    {{end}}
+  </p>
+  
+  <p><b>You got {{$.R.Successes}} successful hits, {{.R.Criticals}} critical hits</b></p>
+
+  <button hx-put="/hitminus1" hx-target="#hit-roll-results" type="submit">-1</button>
+  <button hx-put="/hitplus1" hx-target="#hit-roll-results" type="submit">+1</button>
+  <button hx-put="/hitrerollfailed" hx-target="#hit-roll-results" type="submit">Reroll Failed</button>
+  <button hx-put="/newwoundroll" hx-target="#wound-roll-results" type="submit">Roll Wounds!</button>
+</form>
+ 
+<div id="wound-roll-results"></div>

@@ -1,0 +1,37 @@
+<html lang="en">
+
+  <head>
+    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+    <title>40K</title>
+    <style>
+      div {
+        display:inline;   
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <h1>40K</h1>
+
+    <hr />
+
+    <h2>Hit Roll</h2>
+
+    <form>
+      <input name="A" type="text" placeholder="A">
+      <input name="WS" type="text" placeholder="BS/WS">
+      <input name="S" type="text" placeholder="S">
+      <input name="T" type="text" placeholder="T">
+      <input name="AP" type="text" placeholder="AP">
+      <input name="D" type="text" placeholder="D">
+      <input name="CH" type="text" value="6">
+      <input name="CW" type="text" value="6">
+      <button type="submit" hx-put="/hitroll" hx-target="#hit-roll-results">Roll Hits!</button>
+    </form>
+
+    <div id="hit-roll-results"></div>
+
+  </body>
+
+</html>
