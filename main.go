@@ -56,11 +56,13 @@ func parseDie(r *http.Request) int {
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
+	log.Println("/index")
 	index, _ := os.ReadFile("static/html/index.html")
 	fmt.Fprintln(w, string(index))
 }
 
 func handleHitRoll(w http.ResponseWriter, r *http.Request) {
+	log.Println("/hitroll")
 	attack := parseAttack(r)
 	roll := makeRoll(attack.Attacks)
 	result := makeRollResult(attack, roll, attack.Skill, countSuccesfulHits, countCriticalHits)
@@ -68,6 +70,7 @@ func handleHitRoll(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHitReroll(w http.ResponseWriter, r *http.Request) {
+	log.Println("/hitreroll")
 	attack := parseAttack(r)
 	roll := parseRoll(r)
 	die := parseDie(r)
@@ -76,6 +79,7 @@ func handleHitReroll(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHitMinus1(w http.ResponseWriter, r *http.Request) {
+	log.Println("/hitminus1")
 	attack := parseAttack(r)
 	roll := parseRoll(r)
 	result := modifyResultDie(attack, roll, -1, attack.Skill, countSuccesfulHits, countCriticalHits)
@@ -83,6 +87,7 @@ func handleHitMinus1(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHitPlus1(w http.ResponseWriter, r *http.Request) {
+	log.Println("/hitplus1")
 	attack := parseAttack(r)
 	roll := parseRoll(r)
 	result := modifyResultDie(attack, roll, +1, attack.Skill, countSuccesfulHits, countCriticalHits)
@@ -90,13 +95,15 @@ func handleHitPlus1(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHitRerollFailed(w http.ResponseWriter, r *http.Request) {
+	log.Println("/hitrerollfailed")
 	attack := parseAttack(r)
 	roll := parseRoll(r)
 	result := rerollFailedResultDie(attack, roll, attack.Skill, countSuccesfulHits, countCriticalHits)
 	renderHitRollResults(w, attack, result)
 }
 
-func handleNewWoundRoll(w http.ResponseWriter, r *http.Request) {
+func handleWoundRoll(w http.ResponseWriter, r *http.Request) {
+	log.Println("/woundroll")
 	attack := parseAttack(r)
 	hitResult := parseRollResult(r)
 	roll := makeRoll(hitResult.Successes)
@@ -104,30 +111,40 @@ func handleNewWoundRoll(w http.ResponseWriter, r *http.Request) {
 	renderWoundRollResults(w, attack, woundResult)
 }
 
-func handleWoundMinus1(w http.ResponseWriter, r *http.Request) {
+func handleWoundReroll(w http.ResponseWriter, r *http.Request) {
+	log.Println("/woundreroll")
 	attack := parseAttack(r)
 	roll := parseRoll(r)
-	result := modifyResultDie(attack, roll, -1, attack.Skill, countSuccesfulHits, countCriticalHits)
+	die := parseDie(r)
+	result := rerollResultDie(attack, roll, die, attack.WoundOn, countSuccesfulWounds, countCriticalWounds)
+	renderWoundRollResults(w, attack, result)
+}
+
+func handleWoundMinus1(w http.ResponseWriter, r *http.Request) {
+	log.Println("/woundminus1")
+	attack := parseAttack(r)
+	roll := parseRoll(r)
+	result := modifyResultDie(attack, roll, -1, attack.Skill, countSuccesfulWounds, countCriticalWounds)
 	renderWoundRollResults(w, attack, result)
 }
 
 func handleWoundPlus1(w http.ResponseWriter, r *http.Request) {
+	log.Println("/woundplus1")
 	attack := parseAttack(r)
 	roll := parseRoll(r)
-	result := modifyResultDie(attack, roll, +1, attack.Skill, countSuccesfulHits, countCriticalHits)
+	result := modifyResultDie(attack, roll, +1, attack.Skill, countSuccesfulWounds, countCriticalWounds)
 	renderWoundRollResults(w, attack, result)
 }
 
 func handleWoundRerollFailed(w http.ResponseWriter, r *http.Request) {
+	log.Println("/woundrerollfailed")
 	attack := parseAttack(r)
 	roll := parseRoll(r)
-	result := rerollFailedResultDie(attack, roll, attack.Skill, countSuccesfulHits, countCriticalHits)
+	result := rerollFailedResultDie(attack, roll, attack.Skill, countSuccesfulWounds, countCriticalWounds)
 	renderWoundRollResults(w, attack, result)
 }
 
 func main() {
-	log.Printf("main")
-
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
@@ -138,8 +155,8 @@ func main() {
 	http.HandleFunc("/hitplus1/", handleHitPlus1)
 	http.HandleFunc("/hitrerollfailed/", handleHitRerollFailed)
 
-	http.HandleFunc("/newwoundroll/", handleNewWoundRoll)
-
+	http.HandleFunc("/woundroll/", handleWoundRoll)
+	http.HandleFunc("/woundreroll/", handleWoundReroll)
 	http.HandleFunc("/woundminus1/", handleWoundMinus1)
 	http.HandleFunc("/woundplus1/", handleWoundPlus1)
 	http.HandleFunc("/woundrerollfailed/", handleWoundRerollFailed)

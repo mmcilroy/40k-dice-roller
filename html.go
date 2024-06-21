@@ -27,6 +27,8 @@ func renderDice(result RollResult) []string {
 }
 
 func renderHitRollResults(w http.ResponseWriter, attack Attack, result RollResult) {
+	logAttack(attack)
+	logRollResult(result)
 	t, _ := template.ParseFiles("static/html/hitRollResults.html")
 	json, _ := json.Marshal(result.Roll)
 	t.Execute(w, AttackRollResult{
@@ -38,6 +40,8 @@ func renderHitRollResults(w http.ResponseWriter, attack Attack, result RollResul
 }
 
 func renderWoundRollResults(w http.ResponseWriter, attack Attack, result RollResult) {
+	logAttack(attack)
+	logRollResult(result)
 	t, _ := template.ParseFiles("static/html/woundRollResults.html")
 	json, _ := json.Marshal(result.Roll)
 	t.Execute(w, AttackRollResult{

@@ -1,12 +1,14 @@
-<h2>Hit roll - {{$.A.Attacks}} attacks hitting on {{$.A.Skill}}+</h2></h2>
+<h2>Hit roll - Hitting on {{$.A.Skill}}+, crits on {{$.A.CriticalHitOn}}+</h2>
 
 <form>
   <input name="A" type="hidden" value ="{{$.A.Attacks}}">
   <input name="WS" type="hidden" value ="{{$.A.Skill}}">
   <input name="S" type="hidden" value ="{{$.A.Strength}}">
   <input name="T" type="hidden" value ="{{$.A.Toughness}}">
+  <!--
   <input name="AP" type="hidden" value ="{{$.A.Penetration}}">
   <input name="D" type="hidden" value ="{{$.A.Damage}}">
+  -->
   <input name="CH" type="hidden" value ="{{$.A.CriticalHitOn}}">
   <input name="CW" type="hidden" value ="{{$.A.CriticalWoundOn}}">
 
@@ -25,7 +27,7 @@
   <button hx-put="/hitminus1" hx-target="#hit-roll-results" type="submit">-1</button>
   <button hx-put="/hitplus1" hx-target="#hit-roll-results" type="submit">+1</button>
   <button hx-put="/hitrerollfailed" hx-target="#hit-roll-results" type="submit">Reroll Failed</button>
-  <button hx-put="/newwoundroll" hx-target="#wound-roll-results" type="submit">Roll Wounds!</button>
+  <button hx-put="/woundroll" hx-target="#wound-roll-results" type="submit">Roll Wounds!</button>
 </form>
  
 <div id="wound-roll-results"></div>

@@ -28,12 +28,14 @@ type RollResult struct {
 
 type countDieFunc func(Attack, []int) int
 
-func logAttackRoll(attack Attack) {
-	log.Printf("Hit Roll - %d attacks hitting on %d+\n", attack.Attacks, attack.Skill)
-}
-
-func logWoundRoll(numAttacks int, attack Attack) {
-	log.Printf("Wound Roll - %d attacks hitting on %d+\n", numAttacks, attack.WoundOn)
+func logAttack(attack Attack) {
+	log.Printf("Attack - Attacks: %d, Skill: %d, Strength: %d, Toughness: %d, WoundOn: %d, CriticalWoundOn: %d\n",
+		attack.Attacks,
+		attack.Skill,
+		attack.Strength,
+		attack.Toughness,
+		attack.WoundOn,
+		attack.CriticalWoundOn)
 }
 
 func logRollResult(rollResult RollResult) {
@@ -42,7 +44,8 @@ func logRollResult(rollResult RollResult) {
 		sb.WriteString(strconv.Itoa(rollResult.Roll[i]))
 		sb.WriteString(" ")
 	}
-	log.Printf("RollResult - Roll: %s, SuccessOn: %d, Successes: %d, Criticals: %d\n", sb.String(),
+	log.Printf("RollResult - Roll: %s, SuccessOn: %d, Successes: %d, Criticals: %d\n",
+		sb.String(),
 		rollResult.SuccessOn,
 		rollResult.Successes,
 		rollResult.Criticals)
@@ -109,6 +112,7 @@ func countCriticalWounds(attack Attack, roll []int) int {
 }
 
 func makeRoll(n int) []int {
+	log.Printf("Rolling %d dice\n", n)
 	r := make([]int, n)
 	for i := 0; i < n; i++ {
 		r[i] = rand.Intn(6) + 1
